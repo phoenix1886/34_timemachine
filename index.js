@@ -65,7 +65,7 @@ class TimerWidget{
     this.timerContainer = document.createElement('div')
 
     this.timerContainer.innerHTML = TEMPLATE
-    this.timerContainer.setAttribute("style", "border: solid 2px darkgrey; padding: 5px; width: 120px; margin: 1px; background-color: lightgrey; position: fixed; top:0px; left: 55px; z-index: 1")
+    this.timerContainer.setAttribute("style", "border: solid 2px darkgrey; padding: 5px; width: 120px; margin: 1px; background-color: lightgrey; position: fixed; top:37px; left: 55px; z-index: 1")
     this.timerContainer.getElementsByTagName('h1')[0].setAttribute("style", "margin: 0; color: white; text-align: center")
 
     rootTag.insertBefore(this.timerContainer, rootTag.firstChild)
