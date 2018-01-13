@@ -1,5 +1,13 @@
-var TIMEOUT_IN_SECS = 3 * 60
-var TEMPLATE = '<h1><span class="js-timer-minutes">00</span>:<span class="js-timer-seconds">00</span></h1>'
+var TIMEOUT_IN_SECS = 60 * 3
+var NOTIFICATION_INTERVAL_IN_SECS = 30
+var NOTIFICATIONS = [
+  'Хватит прокрастинировать, пора дела делать!',
+  'Нормально делай, нормально будет!',
+  'Код сам себя не напишет, Валли совсем заскучала!',
+  'Делу время, потехе час.'
+]
+var TEMPLATE =
+  '<h1><span class="js-timer-minutes">00</span>:<span class="js-timer-seconds">00</span></h1>'
 
 function padZero(number){
   return ("00" + String(number)).slice(-2);
@@ -39,7 +47,7 @@ class Timer{
       return this.timeout_in_secs
     var currentTimestamp = this.getTimestampInSecs()
     var secsGone = currentTimestamp - this.timestampOnStart
-    return Math.max(this.timeout_in_secs - secsGone, 0)
+    return this.timeout_in_secs - secsGone
   }
 }
 
@@ -56,8 +64,9 @@ class TimerWidget{
     // adds HTML tag to current page
     this.timerContainer = document.createElement('div')
 
-    this.timerContainer.setAttribute("style", "height: 100px;")
     this.timerContainer.innerHTML = TEMPLATE
+    this.timerContainer.setAttribute("style", "border: solid 2px darkgrey; padding: 5px; width: 120px; margin: 1px; background-color: lightgrey; position: fixed; top:0px; left: 55px; z-index: 1")
+    this.timerContainer.getElementsByTagName('h1')[0].setAttribute("style", "margin: 0; color: white; text-align: center")
 
     rootTag.insertBefore(this.timerContainer, rootTag.firstChild)
 
@@ -88,9 +97,30 @@ function main(){
 
   timerWiget.mount(document.body)
 
+  function startNotification(notification_interval) {
+      timer = new Timer(notification_interval);
+      secsLeft = timer.calculateSecsLeft();
+      timer.start();
+  }
+
+  function randomInt(ceiling) {
+    return Math.floor(Math.random()*ceiling);
+  }
+
+  function showRandomNotification() {
+    var random_notification = NOTIFICATIONS[randomInt(NOTIFICATIONS.length)];
+    window.alert(random_notification);
+  }
+
   function handleIntervalTick(){
     var secsLeft = timer.calculateSecsLeft()
-    timerWiget.update(secsLeft)
+    if (secsLeft < 0){
+      showRandomNotification();
+      startNotification(NOTIFICATION_INTERVAL_IN_SECS)
+    }
+    else {
+      timerWiget.update(secsLeft)
+    }
   }
 
   function handleVisibilityChange(){
